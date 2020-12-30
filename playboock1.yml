@@ -1,0 +1,26 @@
+---
+ - name: Install Docker and create sudo users
+   hosts: all
+   become: yes
+
+   tasks:
+   - name: Instal yum utils
+     yum: name=yum-utils state=latest
+   - name: Instal devise mapper persistent data
+     yum: name=devise-mapper-persistent-data state=latest
+   - name: Instal lvm2
+     yum: name=lvm2 state=latest
+   - name: Add Docker repository
+     get_url: 
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+   - name: Instal Docker
+     package: name=docker-ce state=latest
+   - name: Add User
+     user: name={{ item.name }} state=persent 
+           groups={{ item.groups }}
+           
+           with_items:
+           - { name: "user1", groups: [ "sudo", "docker" ] }
+           - { name: "user2", groups: [ "sudo", "docker" ] }
+...
